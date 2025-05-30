@@ -1,3 +1,4 @@
+const { generateAccessToken, generateRefreshToken } = require('../helpers/token.helpers');
 const User = require('../models/User');
 
 const registerUser = async (data) => {
@@ -56,10 +57,32 @@ const loginUser = async (email, password) => {
       throw new Error('User not found');
     }
     if (user.password !== password) {
-      throw new Error('Invalid password');
+      throw new Error('Invalid credentials');
     }
-    return user;
+
+    const accessToken = await generateAccessToken(user);
+    const refreshToken = await generateRefreshToken(user);
+
+    const userData = {
+      id: user._id,
+      full_name: user.full_name,
+      email: user.email,
+      phone: user.phone,
+      address: user.address,
+      city: user.city,
+      state: user.state,
+      occupation: user.occupation,
+      profile_picture: user.profile_picture,
+    };
+
+    const response = {
+      user: userData,
+      accessToken,
+      refreshToken,
+    };
+    return response;
   } catch (error) {
+    console.error('Error logging in user:', error);
     throw new Error('Error logging in user');
   }
 };
