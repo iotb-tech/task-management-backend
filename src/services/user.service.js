@@ -43,7 +43,23 @@ const registerUser = async (data) => {
       full_name: data.full_name,
     });
     await newUser.save();
-    return newUser;
+    return {
+      success: true,
+      error: false,
+      status: 201,
+      message: 'User registered successfully',
+      user: {
+        id: newUser._id,
+        full_name: newUser.full_name,
+        email: newUser.email,
+        phone: newUser.phone,
+        address: newUser.address,
+        city: newUser.city,
+        state: newUser.state,
+        occupation: newUser.occupation,
+        profile_picture: newUser.profile_picture,
+      },
+    };
   } catch (error) {
     console.error('Error registering user:', error);
     throw new Error('Error registering user');
@@ -63,6 +79,9 @@ const loginUser = async (email, password) => {
     const accessToken = await generateAccessToken(user);
     const refreshToken = await generateRefreshToken(user);
 
+    user.refresh_token = refreshToken;
+    await user.save();
+
     const userData = {
       id: user._id,
       full_name: user.full_name,
@@ -76,6 +95,10 @@ const loginUser = async (email, password) => {
     };
 
     const response = {
+      success: true,
+      error: false,
+      status: 200,
+      message: 'User logged in successfully',
       user: userData,
       accessToken,
       refreshToken,
@@ -98,6 +121,7 @@ const getUserProfile = async (userId) => {
     throw new Error('Error fetching user profile');
   }
 };
+
 const updateUserProfile = async (userId, data) => {
   try {
     const user = await User.findById(userId);
@@ -105,7 +129,6 @@ const updateUserProfile = async (userId, data) => {
       throw new Error('User not found');
     }
     user.full_name = data.full_name || user.full_name;
-    user.email = data.email || user.email;
     user.phone = data.phone || user.phone;
     user.address = data.address || user.address;
     user.city = data.city || user.city;
@@ -119,13 +142,18 @@ const updateUserProfile = async (userId, data) => {
   }
 };
 
-const logoutUser = async (userId) => {
+const logoutUser = async (userId, refresh_token) => {
   try {
     const user = await User.findById(userId);
     if (!user) {
       throw new Error('User not found');
     }
-    // Perform logout logic (e.g., invalidate session)
+
+    if (user.refresh_token !== refresh_token) {
+      throw new Error('Invalid refresh token');
+    }
+    user.refresh_token = null; // Clear the refresh token
+    await user.save();
     return { message: 'User logged out successfully' };
   } catch (error) {
     throw new Error('Error logging out user');
