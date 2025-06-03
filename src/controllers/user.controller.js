@@ -51,4 +51,15 @@ const getProfile = async (req, res) => {
   }
 };
 
-module.exports = { register, login, updateProfile, getProfile };
+const logout = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const refreshToken = req.body.refreshToken;
+    await userService.logoutUser(userId, refreshToken);
+    res.status(200).json({ message: 'User logged out successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+module.exports = { register, login, updateProfile, getProfile, logout };
