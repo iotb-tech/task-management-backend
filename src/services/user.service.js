@@ -156,6 +156,7 @@ const logoutUser = async (userId, refresh_token) => {
     await user.save();
     return { message: 'User logged out successfully' };
   } catch (error) {
+    console.error('Error logging out user:', error);
     throw new Error('Error logging out user');
   }
 };
