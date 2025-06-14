@@ -1,8 +1,9 @@
-const express = require('express');
-const cors = require('cors');
-const dotenv = require('dotenv');
-const connectDB = require('./src/config/db');
-const userRoutes = require('./src/routes/user.route');
+const express = require("express");
+const cors = require("cors");
+const dotenv = require("dotenv");
+const connectDB = require("./src/config/db");
+const userRoutes = require("./src/routes/user.route");
+const taskRoutes = require("./src/routes/task.route");
 
 dotenv.config();
 
@@ -11,7 +12,8 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use('/users', userRoutes);
+app.use("/users", userRoutes);
+app.use("/tasks", taskRoutes);
 
 connectDB();
 
