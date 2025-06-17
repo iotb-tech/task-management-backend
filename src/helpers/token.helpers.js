@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+const User = require('../models/User')
 
 const generateAccessToken = async (user) => {
   const token = jwt.sign(
@@ -32,11 +32,11 @@ const generateRefreshToken = async (user) => {
     expiresIn: '7d',
   });
 
-  // await User.findByIdAndUpdate(user._id, { refresh_token: token }, { new: true });
-  // await user.save();
+  // await User.findByIdAndUpdate(user._id, { refresh_token: token });
 
   return token;
 };
+
 
 const verifyRefreshToken = (token) => {
   return new Promise((resolve, reject) => {

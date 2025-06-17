@@ -82,6 +82,9 @@ const loginUser = async (email, password) => {
     user.refresh_token = refreshToken;
     await user.save();
 
+    user.refresh_token = refreshToken;
+    await user.save();
+
     const userData = {
       id: user._id,
       full_name: user.full_name,
@@ -142,6 +145,7 @@ const updateUserProfile = async (userId, data) => {
   }
 };
 
+const logoutUser = async (userId, refresh_token) => {
 const logoutUser = async (userId, refresh_token) => {
   try {
     const user = await User.findById(userId);
