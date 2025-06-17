@@ -64,6 +64,9 @@ const getAllTasks = async () => {
 const getTaskById = async (id) => {
   try {
     const task = await Task.findById(id);
+    if (!task) {
+      throw new Error("Task not found");
+    }
     return {
       success: true,
       error: false,
@@ -80,6 +83,9 @@ const getTaskById = async (id) => {
 const getTasksByUserId = async (userId) => {
   try {
     const tasks = await Task.find({ createdBy: userId });
+    if (!tasks) {
+      throw new Error("Tasks with User id not found");
+    }
     return {
       success: true,
       error: false,
@@ -99,6 +105,7 @@ const updateTask = async (id, updateData) => {
     if (!task) {
       throw new Error("Task not found");
     }
+
     const updatedTask = await Task.findByIdAndUpdate(id, updateData, {
       new: true,
       runValidators: true,
@@ -140,6 +147,9 @@ const updateTaskStatus = async (id, status) => {
 const deleteTask = async (id) => {
   try {
     const task = await Task.findByIdAndDelete(id);
+    if (!task) {
+      throw new Error("Task not found");
+    }
     return {
       success: true,
       error: false,
@@ -172,6 +182,11 @@ const deleteAllTasks = async () => {
 const deleteTasksByUserId = async (userId) => {
   try {
     const tasks = await Task.deleteMany({ createdBy: userId });
+
+    if (!tasks.deletedCount) {
+      throw new Error("No tasks found for this user");
+    }
+
     return {
       success: true,
       error: false,

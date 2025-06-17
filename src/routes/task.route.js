@@ -16,13 +16,13 @@ router.put(
   "/updateStatus/:id",
   verifyAccessToken,
   taskController.updateTaskStatus
-); // 👈 New route
+);
 router.delete("/delete/:id", verifyAccessToken, taskController.deleteTask);
-router.delete("/deleteAll", verifyAccessToken, taskController.deleteAllTasks); // 👈 New route
+router.delete("/deleteAll", verifyAccessToken, taskController.deleteAllTasks);
 router.delete(
   "/deleteByUser/:id",
   verifyAccessToken,
   taskController.deleteTasksByUserId
-); // 👈 New route
+);
 
 module.exports = router;
