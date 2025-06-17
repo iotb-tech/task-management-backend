@@ -115,16 +115,17 @@ const loginUser = async (email, password) => {
 
 const getUserProfile = async (userId) => {
   try {
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).select('-password -refresh_token -__v');
+
     if (!user) {
       throw new Error('User not found');
     }
-    return user;
+
+    return user.toObject();
   } catch (error) {
-    throw new Error('Error fetching user profile');
+    throw new Error('Error fetching user profile: ' + error.message);
   }
 };
-
 const updateUserProfile = async (userId, data) => {
   try {
     const user = await User.findById(userId);
@@ -145,7 +146,6 @@ const updateUserProfile = async (userId, data) => {
   }
 };
 
-const logoutUser = async (userId, refresh_token) => {
 const logoutUser = async (userId, refresh_token) => {
   try {
     const user = await User.findById(userId);
